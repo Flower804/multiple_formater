@@ -13,6 +13,8 @@ import java.io.FileWriter;
 public class Main {
     public static void main(String[] args){
         script_starter();
+        //pen_drive_format_preparation();
+        endder();
     }
 
     public static void script_starter(){
@@ -28,7 +30,6 @@ public class Main {
             int user_choice;
 
             user_choice = myObj.nextInt();
-
             if(user_choice == 1){ //TODO: fix the problem where if you put any other number the program freaks out
                 System.out.println("Start pen_drive format sequence");
                 System.out.print("\033[H\033[2J"); //clear terminal  
@@ -47,6 +48,13 @@ public class Main {
             myObj.close();
             script_starter();
         }
+    }
+
+    public static void endder(){
+        System.out.print("\033[H\033[2J"); //clear terminal  
+        System.out.flush();
+
+        System.out.println("The volumes have been formatted succesfully :D");
     }
 
     /*
@@ -71,44 +79,60 @@ public class Main {
     //====================================================================================================
 
     public static void pen_drive_format_preparation(){
-        System.out.println("what volume do you want to format?");
-
-        try{
-            Process powerShellProcess = Runtime.getRuntime().exec("powershell.exe get-Volume"); //execute final command
-
-            powerShellProcess.getOutputStream().close();
-
-            String line;
-            BufferedReader stdout = new BufferedReader(new InputStreamReader(
-              powerShellProcess.getInputStream()));
-            while ((line = stdout.readLine()) != null) { //TODO: analise the line got and find a way to only show the ones that have the tag - Removable
-             System.out.println(line);
-            }
-            stdout.close();
-
-        } catch(IOException e) {
-            System.out.println("an error has ocurred in pre-formater USB");
-            e.printStackTrace();
-        }
-        System.out.println("-> ");
-        //get user selected input
-        //TODO: being able to get multplie
-        //maybe ask how many volumes the user wants to format and then do a loop where you get one at a time the string, add them to a total array, then do a for loop to 
-        //format those volumes NOTE: EACH LOOP CLEAR THE TERMINAL
+        
+        System.out.println("how many volumes would you like to format?");
         Scanner myObj = new Scanner(System.in);
-        
-        String user_volume = myObj.nextLine();
+        int format_number = myObj.nextInt();
 
-        System.out.println(user_volume);
+        String[] volumes_to_format = {" ", "", ""}; //create final String[] so you can "parse" the choosen volumes from the user 
+
+        Scanner volume_to_get = new Scanner(System.in);
+        for(int i = 0; i <= (format_number-1); i++){
+            String user_volume;
+
+            System.out.print("\033[H\033[2J"); //clear terminal  
+            System.out.flush();
+            
+            System.out.println((i +1) + "volume out of: " + format_number + "\n"); //show the user on where he is in the loop
+            try{
+                Process powerShellProcess = Runtime.getRuntime().exec("powershell.exe get-Volume"); //execute command to get pc's volume list
+
+                powerShellProcess.getOutputStream().close();
+
+                String line;
+                BufferedReader stdout = new BufferedReader(new InputStreamReader(
+                  powerShellProcess.getInputStream()));
+                while ((line = stdout.readLine()) != null) { //TODO: find a way to analise the line got and find a way to only show the ones that have the tag - Removable
+                 System.out.println(line);
+                }
+                stdout.close();
+
+            } catch(IOException e) {
+                System.out.println("an error has ocurred in pre-formater USB");
+                e.printStackTrace();
+            }
+            System.out.println("What Volume do you want to format");
+            System.out.println("-> ");
+            
         
-        String pre_gon = "\"";
-        String pre_final_gon = pre_gon.concat(user_volume);
-         
+            user_volume = volume_to_get.nextLine(); //get user's intended volume
+            
+            volumes_to_format[i] = user_volume; //add volume to volume list
+
+        }
+        volume_to_get.close();
+        for(int j = 0; j <= (format_number - 1); j++){
+            String user_volume = volumes_to_format[j]; 
+
+            //prepare volume to be of format "F:" for example
+            String pre_gon = "\"";
+            String pre_final_gon = pre_gon.concat(user_volume);
+
+            //System.out.println(pre_final_gon.concat(pre_gon));
+            write_the_script(pre_final_gon.concat(pre_gon));    //send volume to formater sequence
+        }
         myObj.close();
-
-        write_the_script(pre_final_gon.concat(pre_gon));
     }
-    
     //===================================FORMATTER AREA===================================================
 
 
@@ -184,15 +208,15 @@ public class Main {
 
             powerShellProcess.getOutputStream().close();
 
-
-            String line;
-            System.out.println("Standard Output:");
-            BufferedReader stdout = new BufferedReader(new InputStreamReader(
-              powerShellProcess.getInputStream()));
-            while ((line = stdout.readLine()) != null) {
-             System.out.println(line);
-            }
-            stdout.close();
+            //comments here used for debuging 
+            //String line;
+            System.out.println("Formatting the volumes... ");
+            //BufferedReader stdout = new BufferedReader(new InputStreamReader(
+            //powerShellProcess.getInputStream()));
+            //while ((line = stdout.readLine()) != null) {
+            // System.out.println(line);
+            //}
+            //stdout.close();
 
         } catch(IOException e) {
             System.out.println("An error has occured in script runner");
