@@ -116,6 +116,10 @@ public class Main {
             
         
             user_volume = volume_to_get.nextLine(); //get user's intended volume
+
+            if(!(user_volume.indexOf(':') == 1)){ //verify the volume specified is in the F: format if not force it F -> F:
+                user_volume.concat(":");
+            }
             
             volumes_to_format[i] = user_volume; //add volume to volume list
 
