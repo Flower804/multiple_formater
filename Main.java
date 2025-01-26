@@ -5,12 +5,17 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.util.Arrays;
+//things for pwshell
+import java.io.File;
+import java.io.FileWriter;
 
 public class Main {
     public static void main(String[] args){
-        String[] arguments = {"echo", "this is working"};
+        String[] arguments = {"a:"};
 
-        formater_Floppy(arguments);        
+        //formater_Floppy(arguments);
+        
+        write_the_script(arguments);
 
     }
     /*
@@ -30,7 +35,7 @@ public class Main {
      */
     public static void formater_Floppy(String[] arguments){ 
         try{
-            String[] command = {"cmd.exe", "/c"};
+            String[] command = {"cmd.exe", "/c", "format"};
 
             //join two arrays
             int first_array = command.length;
@@ -53,16 +58,61 @@ public class Main {
             BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()));
 
             String line = "";
-            while((line = reader.readLine()) != null){
+            String[] confirm = {"call", "Main", "main", "{ENTER}"};
+            while((line = reader.readLine()) != null){ //TODO: find a way to do a list of errors/analyse the outputs properly
                 System.out.print(line + "\n");
+                proc = Runtime.getRuntime().exec(confirm);
             }
+            System.out.println("\r");
 
             proc.waitFor();
         }catch(InterruptedException | IOException ex){
-            System.out.println("Well the program is fuc#d");
+            System.out.println("Well the formater is fuc#d");
             System.out.println(ex);
         }
     }
+    public static void write_the_script(String[] user_volume){
+        create_script();
+        String script = "ipmo storage \n$source =\"C:\\Data\\PowerShellWorkshop\"\n$destination = \"F:\" \nFormat-Volume -DriveLetter $destination -NewFileSystemLabel powershell -FileSystem exfat -Confirm:$false \nrobocopy $source $destination /S \n[media.SystemSounds]::(\"Hand\").play()";
+        //String[] script = {"ipmo storage \n",
+        //                 "$source = \"C:\\Data\\PowerShellWorkshop\" \n", 
+        //                 "$destination = \"F:\" \n", 
+        //                 "Format-Volume -DriveLetter $destination -NewFileSystemLabel powershell -FileSystem exfat -Confirm:$false \n",
+        //                 "robocopy $source $destination /S \n",
+        //                 "[media.SystemSounds]::(\"Hand\").play()"};
+        //String final_string = String.join(",", script);
 
+        try{
+            FileWriter myWriter = new FileWriter("erase_script.ps1");
+            myWriter.write(script);
+            myWriter.close();
+        } catch(IOException e){
+            System.out.println("An error has occurred in writer");
+            e.printStackTrace();
+        }
+    }
+
+    public static void create_script(){
+        try{
+            File myObj = new File("erase_script.ps1");
+            if(myObj.createNewFile()){
+                System.out.println("File created: " + myObj.getName());
+            } else { //script already exists delete it and try again
+                delete_script();
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred in script creator");
+            e.printStackTrace();
+        }
+    }
+    public static void delete_script(){
+        File myObj = new File("erase_script.ps1");
+        if(myObj.delete()){
+            System.out.println("Deleted the file: " + myObj.getName());
+            create_script();
+        } else {
+            System.out.println("Failed to delete the file.");
+        }
+    }
     
 }
