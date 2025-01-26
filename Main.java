@@ -5,19 +5,50 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Scanner;
 //things for pwshell
 import java.io.File;
 import java.io.FileWriter;
 
 public class Main {
     public static void main(String[] args){
-        String[] arguments = {"a:"};
-
-        //formater_Floppy(arguments);
-        
-        write_the_script(arguments);
-
+        script_starter();
     }
+
+    public static void script_starter(){
+        //String[] arguments_floppy = {"a:"};
+        //String volume = "\"F:\""; //volume for the pendrive
+//
+        //formater_Floppy(arguments_floppy);
+        //
+        //write_the_script(volume);
+        Scanner myObj = new Scanner(System.in);
+        try{
+            System.out.println("welcome to this version that will futury have a GUI\n Format pen-drive: 1 \n Format Floppy-Disk: 2 (not working) \n");
+            int user_choice;
+
+            user_choice = myObj.nextInt();
+
+            if(user_choice == 1){ //TODO: fix the problem where if you put any other number the program freaks out
+                System.out.println("Start pen_drive format sequence");
+                System.out.print("\033[H\033[2J"); //clear terminal  
+                System.out.flush(); 
+                pen_drive_format_preparation();
+                //write_the_script(volume); //Start the pen_drive format sequence
+            } else {
+                System.out.println("wrong Input please try again");
+                myObj.close();
+                script_starter();
+            }
+
+            myObj.close();
+        } catch(Exception e){
+            System.out.println("something went wrong");
+            myObj.close();
+            script_starter();
+        }
+    }
+
     /*
      *  /l          - format for single-sided use
      *  /4          - formates a fouble-density disketter
@@ -33,7 +64,59 @@ public class Main {
      *      format a: /4            -The floppy disk drive A: will be formated to double-density capacity iun this high-density drive
      *      format b: /T:80 /N:9    -The floy disk in drive B: will be formatted to 720KB (80 tracks, 9 secotrs per track)
      */
-    public static void formater_Floppy(String[] arguments){ 
+    //===================================USER PREPARATION AREA============================================
+
+    //====================================================================================================
+    //===================================USB-Preaparation PART============================================
+    //====================================================================================================
+
+    public static void pen_drive_format_preparation(){
+        System.out.println("what volume do you want to format?");
+
+        try{
+            Process powerShellProcess = Runtime.getRuntime().exec("powershell.exe get-Volume"); //execute final command
+
+            powerShellProcess.getOutputStream().close();
+
+            String line;
+            BufferedReader stdout = new BufferedReader(new InputStreamReader(
+              powerShellProcess.getInputStream()));
+            while ((line = stdout.readLine()) != null) { //TODO: analise the line got and find a way to only show the ones that have the tag - Removable
+             System.out.println(line);
+            }
+            stdout.close();
+
+        } catch(IOException e) {
+            System.out.println("an error has ocurred in pre-formater USB");
+            e.printStackTrace();
+        }
+        System.out.println("-> ");
+        //get user selected input
+        //TODO: being able to get multplie
+        //maybe ask how many volumes the user wants to format and then do a loop where you get one at a time the string, add them to a total array, then do a for loop to 
+        //format those volumes NOTE: EACH LOOP CLEAR THE TERMINAL
+        Scanner myObj = new Scanner(System.in);
+        
+        String user_volume = myObj.nextLine();
+
+        System.out.println(user_volume);
+        
+        String pre_gon = "\"";
+        String pre_final_gon = pre_gon.concat(user_volume);
+         
+        myObj.close();
+
+        write_the_script(pre_final_gon.concat(pre_gon));
+    }
+    
+    //===================================FORMATTER AREA===================================================
+
+
+    //====================================================================================================
+    //==============================Floppy-Disk FORMATTER PART============================================
+    //====================================================================================================
+
+    public static void formater_Floppy(String[] arguments){  //Format function to format floppy diskls
         try{
             String[] command = {"cmd.exe", "/c", "format"};
 
@@ -71,25 +154,77 @@ public class Main {
             System.out.println(ex);
         }
     }
-    public static void write_the_script(String[] user_volume){
+
+    //====================================================================================================
+    //==============================PEN-DRIVE FORMATTER PART==============================================
+    //====================================================================================================
+
+    /*Pen-drive format sequence
+        1- write script
+        2- create script
+        3- delete script
+        4- create script
+        5- write script
+        6- run script
+    */
+    public static void run_script(){
+        //System.out.println("Working Directory = " + System.getProperty("user.dir"));
+        String current_dir = System.getProperty("user.dir"); //get current directory of the code
+        //to bypass system security -> powershell -ExecutionPolicy Bypass -File script.ps1
+        //total command would to script -> powershell.exe -ExecutionPolicy Bypass "& ""dir"
+        System.out.println(current_dir + "\n");
+
+        String script_to_run = "\\erase_script.ps1\""; //created script name to concate to directory
+        String final_to_conclude = current_dir.concat(script_to_run);
+        String command = "powershell.exe -ExecutionPolicy Bypass \"& \"";
+
+        System.out.println(command.concat(final_to_conclude)); //print out final command for the debugging purposses 
+        try{
+            Process powerShellProcess = Runtime.getRuntime().exec(command.concat(final_to_conclude)); //execute final command
+
+            powerShellProcess.getOutputStream().close();
+
+
+            String line;
+            System.out.println("Standard Output:");
+            BufferedReader stdout = new BufferedReader(new InputStreamReader(
+              powerShellProcess.getInputStream()));
+            while ((line = stdout.readLine()) != null) {
+             System.out.println(line);
+            }
+            stdout.close();
+
+        } catch(IOException e) {
+            System.out.println("An error has occured in script runner");
+            e.printStackTrace();
+        }
+    }
+
+    public static void write_the_script(String user_volume){ //first
         create_script();
-        String script = "ipmo storage \n$source =\"C:\\Data\\PowerShellWorkshop\"\n$destination = \"F:\" \nFormat-Volume -DriveLetter $destination -NewFileSystemLabel powershell -FileSystem exfat -Confirm:$false \nrobocopy $source $destination /S \n[media.SystemSounds]::(\"Hand\").play()";
-        //String[] script = {"ipmo storage \n",
-        //                 "$source = \"C:\\Data\\PowerShellWorkshop\" \n", 
-        //                 "$destination = \"F:\" \n", 
-        //                 "Format-Volume -DriveLetter $destination -NewFileSystemLabel powershell -FileSystem exfat -Confirm:$false \n",
-        //                 "robocopy $source $destination /S \n",
-        //                 "[media.SystemSounds]::(\"Hand\").play()"};
-        //String final_string = String.join(",", script);
+        //original string -> String script = "ipmo storage \n$source =\"C:\\Data\\PowerShellWorkshop\"\n$destination = \"F:\" \nFormat-Volume -DriveLetter $destination -NewFileSystemLabel powershell -FileSystem exfat -Confirm:$false \nrobocopy $source $destination /S \n[media.SystemSounds]::(\"Hand\").play()";
+        //code to be run in powershell
+        String[] script = {"ipmo storage \n",
+                         "$source = \"C:\\Data\\PowerShellWorkshop\" \n", 
+                         "$destination = ",
+                         "\"not definet\" ",
+                         "\n", 
+                         "Format-Volume -DriveLetter $destination -NewFileSystemLabel powershell -FileSystem exfat -Confirm:$false \n",
+                         "robocopy $source $destination /S \n",
+                         "[media.SystemSounds]::(\"Hand\").play()"};
+        script[3] = user_volume;
+
+        String final_string = String.join(",", script); //convert final array into finall string
 
         try{
             FileWriter myWriter = new FileWriter("erase_script.ps1");
-            myWriter.write(script);
+            myWriter.write(final_string.replace(",", ""));
             myWriter.close();
         } catch(IOException e){
             System.out.println("An error has occurred in writer");
             e.printStackTrace();
         }
+        run_script();
     }
 
     public static void create_script(){
