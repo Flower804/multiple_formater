@@ -40,11 +40,9 @@ public class Main {
                 //write_the_script(volume); //Start the pen_drive format sequence
             } else {
                 System.out.println("wrong Input please try again");
-                myObj.close();
                 script_starter();
             }
 
-            myObj.close();
         } catch(Exception e){
             System.out.println("something went wrong");
             myObj.close();
@@ -127,7 +125,7 @@ public class Main {
             volumes_to_format[i] = user_volume; //add volume to volume list
 
         }
-        volume_to_get.close();
+        volume_to_get.close(); 
         for(int j = 0; j <= (format_number - 1); j++){
             String user_volume = volumes_to_format[j]; 
 
