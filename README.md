@@ -2,7 +2,7 @@
 Multiple Formater is a program that let's you format multiple storage devices without having to write the same command multiple times
 
 ## How to run
-Right now the program isen't finished and only has a CLI version, I'll work on a client but yea it still isen't here <br>
+Right now the program isn't finished and only has a CLI version, I'll work on a client but yea it still isen't here <br>
 1. **Clone the repository**
 ```bash
   git clone git@github.com:Flower804/multiple_formater.git   
@@ -19,7 +19,7 @@ If you already have the repository cloned you can just run the already compiled 
 ## More about the Program/Development
 ### Current Problems
 1. For testing purposes the program only allows you to input up to 3 storage devices, it's an easy fix and next version it will be fixed.
-2. The floppy disk part of this program still isen't working.
+2. The floppy disk part of this program still isn't working.
 3. If when you'r choosing what to format in the program and don't put an option that's specified the program freaks out and gives an error.
 
 ### Extra notes
