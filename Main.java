@@ -40,14 +40,14 @@ public class Main {
                 //write_the_script(volume); //Start the pen_drive format sequence
             } else {
                 System.out.println("wrong Input please try again");
-                myObj.close();
+                
                 script_starter();
             }
 
-            myObj.close();
+            
         } catch(Exception e){
             System.out.println("something went wrong");
-            myObj.close();
+            
             script_starter();
         }
     }
@@ -86,7 +86,7 @@ public class Main {
         Scanner myObj = new Scanner(System.in);
         int format_number = myObj.nextInt();
 
-        String[] volumes_to_format = {" ", "", ""}; //create final String[] so you can "parse" the choosen volumes from the user 
+        String[] volumes_to_format = {" ", "", "", "", "", "", "", "", "", ""}; //create final String[] so you can "parse" the choosen volumes from the user 
 
         Scanner volume_to_get = new Scanner(System.in);
         for(int i = 0; i <= (format_number-1); i++){
