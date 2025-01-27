@@ -25,8 +25,10 @@ public class Main {
         //
         //write_the_script(volume);
         Scanner myObj = new Scanner(System.in);
+        System.out.print("\033[H\033[2J"); //clear terminal  
+        System.out.flush(); 
         try{
-            System.out.println("welcome to this version that will futury have a GUI\n Format pen-drive: 1 \n Format Floppy-Disk: 2 (not working) \n");
+            System.out.println("welcome to this version that will futury have a GUI\n\n-Format pen-drive: 1 \n\n-Format Floppy-Disk: 2 (not working) \n");
             int user_choice;
 
             user_choice = myObj.nextInt();
@@ -93,9 +95,10 @@ public class Main {
             System.out.print("\033[H\033[2J"); //clear terminal  
             System.out.flush();
             
-            System.out.println((i +1) + "volume out of: " + format_number + "\n"); //show the user on where he is in the loop
+            System.out.println((i +1) + " volume out of: " + format_number + "\n"); //show the user on where he is in the loop
             try{
                 Process powerShellProcess = Runtime.getRuntime().exec("powershell.exe get-Volume"); //execute command to get pc's volume list
+                //ProcessBuilder powerShellProcess = new ProcessBuilder("powershell.exe get-Volume");
 
                 powerShellProcess.getOutputStream().close();
 
