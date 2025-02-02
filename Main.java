@@ -133,12 +133,13 @@ public class Main {
         System.out.flush();
 
         System.out.println("Do you want to change the configuration options? \n\nif you don't change it will continue with default\n\nwrite \"yes\" or \"no\" ");
-        if(confirmation() == 1){
+        int flag = confirmation();
+        if(flag == 1){
             change_default(); //go to the change default configs thingy
 
             System.out.print("\033[H\033[2J"); //clear terminal  
             System.out.flush();
-        } else if(confirmation() == 0){ //TODO: fix this issue where you need to confirm 2 times, like yippe more secure but like anoying and the user may think the program broke
+        } else if(flag == 0){ //TODO: fix this issue where you need to confirm 2 times, like yippe more secure but like anoying and the user may think the program broke
             System.out.println("operation continued with default settings");
         }
 
