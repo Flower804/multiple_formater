@@ -19,8 +19,10 @@ public class Main {
         System.out.print("\033[H\033[2J"); //clear terminal  
         System.out.flush();
         Scanner myObj = new Scanner(System.in);
+        System.out.print("\033[H\033[2J"); //clear terminal  
+        System.out.flush(); 
         try{
-            System.out.println("welcome to this version that will futury have a GUI\n Format pen-drive: 1 \n Format Floppy-Disk: 2 (not working) \n");
+            System.out.println("welcome to this version that will futury have a GUI\n\n-Format pen-drive: 1 \n\n-Format Floppy-Disk: 2 (not working) \n");
             int user_choice;
 
             user_choice = myObj.nextInt();
@@ -32,11 +34,22 @@ public class Main {
                 //write_the_script(volume); //Start the pen_drive format sequence
             } else {
                 System.out.println("wrong Input please try again");
+<<<<<<< HEAD
                 script_starter();
             }
 
         } catch(Exception e){
             System.out.println("something went wrong");
+=======
+                
+                script_starter();
+            }
+
+            
+        } catch(Exception e){
+            System.out.println("something went wrong");
+            
+>>>>>>> 769fbbde2ebac7de693310c63c80af89cc433d49
             script_starter();
         }
     }
@@ -75,7 +88,7 @@ public class Main {
         Scanner myObj = new Scanner(System.in);
         int format_number = myObj.nextInt();
 
-        String[] volumes_to_format = {" ", "", ""}; //create final String[] so you can "parse" the choosen volumes from the user 
+        String[] volumes_to_format = {" ", "", "", "", "", "", "", "", "", ""}; //create final String[] so you can "parse" the choosen volumes from the user 
 
         Scanner volume_to_get = new Scanner(System.in);
         for(int i = 0; i <= (format_number-1); i++){
@@ -87,6 +100,7 @@ public class Main {
             System.out.println((i +1) + " volume out of: " + format_number + "\n"); //show the user on where he is in the loop
             try{
                 Process powerShellProcess = Runtime.getRuntime().exec("powershell.exe get-Volume"); //execute command to get pc's volume list
+                //ProcessBuilder powerShellProcess = new ProcessBuilder("powershell.exe get-Volume");
 
                 powerShellProcess.getOutputStream().close();
 
