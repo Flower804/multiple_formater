@@ -8,10 +8,12 @@ import java.util.Arrays;
 import java.util.Scanner;
 //things for pwshell
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 
 public class Main {
     public static void main(String[] args){
+        //change_config();
         script_starter();
     }
 
@@ -19,8 +21,6 @@ public class Main {
         System.out.print("\033[H\033[2J"); //clear terminal  
         System.out.flush();
         Scanner myObj = new Scanner(System.in);
-        System.out.print("\033[H\033[2J"); //clear terminal  
-        System.out.flush(); 
         try{
             System.out.println("welcome to this version that will futury have a GUI\n\n-Format pen-drive: 1 \n\n-Format Floppy-Disk: 2 (not working) \n");
             int user_choice;
@@ -34,23 +34,13 @@ public class Main {
                 //write_the_script(volume); //Start the pen_drive format sequence
             } else {
                 System.out.println("wrong Input please try again");
-<<<<<<< HEAD
                 script_starter();
             }
 
         } catch(Exception e){
             System.out.println("something went wrong");
-=======
                 
                 script_starter();
-            }
-
-            
-        } catch(Exception e){
-            System.out.println("something went wrong");
-            
->>>>>>> 769fbbde2ebac7de693310c63c80af89cc433d49
-            script_starter();
         }
     }
 
@@ -129,7 +119,12 @@ public class Main {
             volumes_to_format[i] = user_volume; //add volume to volume list
 
         }
-
+        System.out.println("want to change the configuration options? \nif you don't change it will continue with default\nwrite \"yes\" or \"no\" ");
+        if(confirmation() == 1){
+            
+        } else if(confirmation() == 0){
+            System.out.println("operation continued with default settings");
+        }
         System.out.println("do you want to format this volumes? \n");
         for(int i = 0; i <= (format_number - 1); i++){
             System.out.println(volumes_to_format[i] );
@@ -150,6 +145,10 @@ public class Main {
         }
         myObj.close();
     }
+    //====================================   CONFIGS   ===================================================
+    
+
+
     //===================================FORMATTER AREA===================================================
 
 
@@ -160,11 +159,20 @@ public class Main {
         answer = myObj.nextLine();
         if(answer.equals("yes")){ //for some reason there is a bug when comparing strings with "==" so it's better to use .equals("object")
             System.out.println(" got 1");
+            System.out.print("\033[H\033[2J"); //clear terminal  
+            System.out.flush();
             return 1;
-        } else {
+        } else if(answer.equals("no")){
             System.out.println(" got 0");
+            System.out.print("\033[H\033[2J"); //clear terminal  
+            System.out.flush();
             return 0;
+        } else {
+            System.out.print("\033[H\033[2J"); //clear terminal  
+            System.out.println("sorry smth bad happened \nplease write yes or no");
+            confirmation();
         }
+        return 0;
     }
 
     //====================================================================================================
@@ -264,10 +272,25 @@ public class Main {
                          "$destination = ",
                          "\"not definet\" ",
                          "\n", 
-                         "Format-Volume -DriveLetter $destination -NewFileSystemLabel powershell -FileSystem exfat -Confirm:$false \n",
+                         "Format-Volume -DriveLetter $destination -NewFileSystemLabel ",
+                         "volume_name", 
+                         " -FileSystem ",
+                         "exfat", 
+                         " -Confirm:$false \n",
                          "robocopy $source $destination /S \n",
                          "[media.SystemSounds]::(\"Hand\").play()"};
         script[3] = user_volume;
+        String path = "default_config.txt";
+        try{
+            Scanner file_reader = new Scanner(new File(path));
+            script[6] = file_reader.nextLine();
+            script[8]= file_reader.nextLine();
+
+        } catch(FileNotFoundException e){
+            System.out.println("default config file not found");
+        }
+        
+        
 
         String final_string = String.join(",", script); //convert final array into finall string
 
