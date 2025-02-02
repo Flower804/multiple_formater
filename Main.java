@@ -13,7 +13,7 @@ import java.io.FileWriter;
 
 public class Main {
     public static void main(String[] args){
-        //change_config();
+        //change_default();
         script_starter();
     }
 
@@ -42,6 +42,7 @@ public class Main {
                 
                 script_starter();
         }
+        myObj.close();
     }
 
     public static void endder(){
@@ -72,6 +73,15 @@ public class Main {
     //===================================USB-Preaparation PART============================================
     //====================================================================================================
 
+    /*
+     * File System   Windows 7/8     Windows10/11    MacOs   Ubunto  Linux
+     * NTFS             YES             YES           YES     YES     YES
+     * FAT32            YES             YES           YES     YES     YES
+     * exFAT            YES             YES           YES     YES     YES
+     * HFS+ (Isn't worth it not compatyble)
+     * APFS (Isn't worth it not compatyble)
+     * EXT2, 3, 4 (Isn't worth it not compatyble)
+     */
     public static void pen_drive_format_preparation(){
         
         System.out.println("how many volumes would you like to format?");
@@ -119,17 +129,27 @@ public class Main {
             volumes_to_format[i] = user_volume; //add volume to volume list
 
         }
-        System.out.println("want to change the configuration options? \nif you don't change it will continue with default\nwrite \"yes\" or \"no\" ");
+        System.out.print("\033[H\033[2J"); //clear terminal  
+        System.out.flush();
+
+        System.out.println("Do you want to change the configuration options? \n\nif you don't change it will continue with default\n\nwrite \"yes\" or \"no\" ");
         if(confirmation() == 1){
-            
-        } else if(confirmation() == 0){
+            change_default(); //go to the change default configs thingy
+
+            System.out.print("\033[H\033[2J"); //clear terminal  
+            System.out.flush();
+        } else if(confirmation() == 0){ //TODO: fix this issue where you need to confirm 2 times, like yippe more secure but like anoying and the user may think the program broke
             System.out.println("operation continued with default settings");
         }
+
         System.out.println("do you want to format this volumes? \n");
-        for(int i = 0; i <= (format_number - 1); i++){
+        
+        for(int i = 0; i <= (format_number - 1); i++){ //print out the volumes selected by the user
             System.out.println(volumes_to_format[i] );
         }
+
         System.out.println("\n write  \"yes\" or \"no\" ");
+
         if(confirmation() == 1){
             System.out.println("enteres format sequence");
             for(int j = 0; j <= (format_number - 1); j++){
@@ -144,9 +164,96 @@ public class Main {
             }
         }
         myObj.close();
+        volume_to_get.close();
     }
     //====================================   CONFIGS   ===================================================
-    
+    public static void change_default() {
+        System.out.print("\033[H\033[2J"); //clear terminal  
+        System.out.flush();
+        
+        String[] current_default = {"", "\n", ""}; //create string that will hold the configs in the default_config.txt file
+        String backup_default = "powershell\nexfat"; //backup default configs in case the user fucks up
+                                                     //HEY BUDDY yes YOU that is reading the code, unless you KNOW WHAT YOU'RE DOING don't mess with this
+        try{
+            Scanner object = new Scanner(new File("default_config.txt"));
+            
+            System.out.println("current loaded configs \n");
+            
+            String name = object.nextLine();
+            String filesystem = object.nextLine();
+
+            current_default[0] = name; //add the current def for volume name to the current config string
+            current_default[2] = filesystem; //add the current def for FileSystem to the current config string
+        } catch(FileNotFoundException e){
+            System.out.println("issue loading default config file");
+        }
+        File myObj = new File("default_config.txt");
+
+        System.out.println("\n what do you wanna change? \n1:Name \n2:FileSystem \n3:restore default");
+        
+        String new_string_default;
+        Scanner choice = new Scanner(System.in);
+        int answer = choice.nextInt();
+        
+        if(answer == 1){ //change the default name on the configs
+            String name = ""; //create temp string to hold the new name choosen by the user
+            
+            System.out.print("\033[H\033[2J"); //clear terminal  
+            System.out.flush();
+            
+            System.out.println("\n Please enter new name");
+            
+            Scanner new_name = new Scanner(System.in);
+            
+            name = new_name.nextLine(); //get new name
+
+            current_default[0] = name; //change the old name for the new name in the default config string
+            myObj.delete();
+            try{
+                FileWriter new_defaults = new FileWriter("default_config.txt");
+                
+                new_string_default = String.join(",", current_default);
+                
+                new_defaults.write(new_string_default.replace(",", "")); //write default config 
+                new_defaults.close();
+            } catch(IOException e){
+                System.out.println("an error has ocurred in writer");
+            }
+        } else if(answer == 2){ //change the default FileSystem on the configs
+            String filesystem = ""; //create temp string that will hold new value for the FileSystem
+            
+            Scanner new_fileSystem = new Scanner(System.in);
+            
+            System.out.print("\033[H\033[2J"); //clear terminal  
+            System.out.flush();
+            
+            System.out.println("please write one of the following: NTFS, FAT32, exFAT");
+            
+            filesystem = new_fileSystem.nextLine();
+            
+            current_default[2] = filesystem; //change the default value of the FileSystem for a new one
+            myObj.delete();
+            try{
+                FileWriter new_defaults = new FileWriter("default_config.txt");
+                
+                new_string_default = String.join(",", current_default);
+                
+                new_defaults.write(new_string_default.replace(",", "")); //write new configs
+                new_defaults.close();
+            } catch(IOException e){
+                System.out.println("an error has ocurred in writer");
+            }
+        } else if(answer == 3){ //the user regreted adventuring and decided to load the default configs that come with the program
+            try{
+                FileWriter new_defaults = new FileWriter("default_config.txt");
+                
+                new_defaults.write(backup_default);
+                new_defaults.close();
+            } catch(IOException e) {
+                System.out.println("an error has ocurred in writer");
+            }
+        }
+    }
 
 
     //===================================FORMATTER AREA===================================================
