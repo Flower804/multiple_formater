@@ -13,17 +13,11 @@ import java.io.FileWriter;
 public class Main {
     public static void main(String[] args){
         script_starter();
-        //pen_drive_format_preparation();
-        endder();
     }
 
     public static void script_starter(){
-        //String[] arguments_floppy = {"a:"};
-        //String volume = "\"F:\""; //volume for the pendrive
-//
-        //formater_Floppy(arguments_floppy);
-        //
-        //write_the_script(volume);
+        System.out.print("\033[H\033[2J"); //clear terminal  
+        System.out.flush();
         Scanner myObj = new Scanner(System.in);
         try{
             System.out.println("welcome to this version that will futury have a GUI\n Format pen-drive: 1 \n Format Floppy-Disk: 2 (not working) \n");
@@ -38,14 +32,11 @@ public class Main {
                 //write_the_script(volume); //Start the pen_drive format sequence
             } else {
                 System.out.println("wrong Input please try again");
-                myObj.close();
                 script_starter();
             }
 
-            myObj.close();
         } catch(Exception e){
             System.out.println("something went wrong");
-            myObj.close();
             script_starter();
         }
     }
@@ -93,7 +84,7 @@ public class Main {
             System.out.print("\033[H\033[2J"); //clear terminal  
             System.out.flush();
             
-            System.out.println((i +1) + "volume out of: " + format_number + "\n"); //show the user on where he is in the loop
+            System.out.println((i +1) + " volume out of: " + format_number + "\n"); //show the user on where he is in the loop
             try{
                 Process powerShellProcess = Runtime.getRuntime().exec("powershell.exe get-Volume"); //execute command to get pc's volume list
 
@@ -124,21 +115,43 @@ public class Main {
             volumes_to_format[i] = user_volume; //add volume to volume list
 
         }
-        volume_to_get.close();
-        for(int j = 0; j <= (format_number - 1); j++){
-            String user_volume = volumes_to_format[j]; 
 
-            //prepare volume to be of format "F:" for example
-            String pre_gon = "\"";
-            String pre_final_gon = pre_gon.concat(user_volume);
+        System.out.println("do you want to format this volumes? \n");
+        for(int i = 0; i <= (format_number - 1); i++){
+            System.out.println(volumes_to_format[i] );
+        }
+        System.out.println("\n write  \"yes\" or \"no\" ");
+        if(confirmation() == 1){
+            System.out.println("enteres format sequence");
+            for(int j = 0; j <= (format_number - 1); j++){
+                String user_volume = volumes_to_format[j]; 
 
-            //System.out.println(pre_final_gon.concat(pre_gon));
-            write_the_script(pre_final_gon.concat(pre_gon));    //send volume to formater sequence
+                //prepare volume to be of format "F:" for example
+                String pre_gon = "\"";
+                String pre_final_gon = pre_gon.concat(user_volume);
+
+                //System.out.println(pre_final_gon.concat(pre_gon));
+                write_the_script(pre_final_gon.concat(pre_gon));    //send volume to formater sequence
+            }
         }
         myObj.close();
     }
     //===================================FORMATTER AREA===================================================
 
+
+    public static int confirmation(){
+        Scanner myObj = new Scanner(System.in);
+        String answer = "";
+
+        answer = myObj.nextLine();
+        if(answer.equals("yes")){ //for some reason there is a bug when comparing strings with "==" so it's better to use .equals("object")
+            System.out.println(" got 1");
+            return 1;
+        } else {
+            System.out.println(" got 0");
+            return 0;
+        }
+    }
 
     //====================================================================================================
     //==============================Floppy-Disk FORMATTER PART============================================
