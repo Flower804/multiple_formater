@@ -26,7 +26,7 @@ public class Main {
             int user_choice;
 
             user_choice = myObj.nextInt();
-            if(user_choice == 1){ //TODO: fix the problem where if you put any other number the program freaks out
+            if(user_choice == 1){ 
                 System.out.println("Start pen_drive format sequence");
                 System.out.print("\033[H\033[2J"); //clear terminal  
                 System.out.flush(); 
@@ -139,7 +139,7 @@ public class Main {
 
             System.out.print("\033[H\033[2J"); //clear terminal  
             System.out.flush();
-        } else if(flag == 0){ //TODO: fix this issue where you need to confirm 2 times, like yippe more secure but like anoying and the user may think the program broke
+        } else if(flag == 0){
             System.out.println("operation continued with default settings");
         }
 
