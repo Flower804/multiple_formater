@@ -1,5 +1,10 @@
 //this project will first focus on a CLI program and after it will focus on the GUI and all that pretty stuff
 //file: Main.java
+/* I know I'm using a deprecated method but fuck it, I passed more than 10 hours writing this code in a older 
+    version of java because I forgot to update my java version and I make it work
+   And I'm wayyyyy to deep to change the code to a new method because like the WHOLE code revolves around that method
+   So like, just don't coment on it please, what matters is that it works in the end of the day :,)
+*/
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -13,36 +18,48 @@ import java.io.FileWriter;
 
 public class Main {
     public static void main(String[] args){
-        //change_default();
-        script_starter();
+        //default stuff
+        if((System.getProperty("os.name") == "windows")){
+            script_starter(1);
+        } else {
+            script_starter(2);
+        }
+
+        //debugging stuff
+
     }
 
-    public static void script_starter(){
+    public static void script_starter(int os){ //get 1 when os is windows, get 2 when os is another os,
         System.out.print("\033[H\033[2J"); //clear terminal  
         System.out.flush();
-        Scanner myObj = new Scanner(System.in);
-        try{
-            System.out.println("welcome to this version that will futury have a GUI\n\n-Format pen-drive: 1 \n\n-Format Floppy-Disk: 2 (not working) \n");
-            int user_choice;
+        if(os == 1){
+            Scanner myObj = new Scanner(System.in);
+            try{
+                System.out.println("welcome to this version that will futury have a GUI\n\n-Format pen-drive: 1 \n\n-Format Floppy-Disk: 2 (not working) \n");
+                int user_choice;
 
-            user_choice = myObj.nextInt();
-            if(user_choice == 1){ 
-                System.out.println("Start pen_drive format sequence");
-                System.out.print("\033[H\033[2J"); //clear terminal  
-                System.out.flush(); 
-                pen_drive_format_preparation();
-                //write_the_script(volume); //Start the pen_drive format sequence
-            } else {
-                System.out.println("wrong Input please try again");
-                script_starter();
+                user_choice = myObj.nextInt();
+                if(user_choice == 1){ 
+                    System.out.println("Start pen_drive format sequence");
+                    System.out.print("\033[H\033[2J"); //clear terminal  
+                    System.out.flush(); 
+                    pen_drive_format_preparation();
+                    //write_the_script(volume); //Start the pen_drive format sequence
+                } else {
+                    System.out.println("wrong Input please try again");
+                    script_starter(1);
+                }
+
+            } catch(Exception e){
+                System.out.println("something went wrong");
+
+                    script_starter(1);
             }
-
-        } catch(Exception e){
-            System.out.println("something went wrong");
-                
-                script_starter();
+            myObj.close();
+        } else if(os == 2) { //assuming os is linux or another linux "variation"
+            System.out.println("running on linux");
+            linux_script_writer("algo", "volume");
         }
-        myObj.close();
     }
 
     public static void endder(){
@@ -51,6 +68,11 @@ public class Main {
 
         System.out.println("The volumes have been formatted succesfully :D");
     }
+
+    //====================================================================================================
+    //==========================================WINDOWS AREA==============================================
+    //====================================================================================================
+
 
     /*
      *  /l          - format for single-sided use
@@ -419,21 +441,72 @@ public class Main {
             if(myObj.createNewFile()){
                 System.out.println("File created: " + myObj.getName());
             } else { //script already exists delete it and try again
-                delete_script();
+                delete_script("erase_script.ps1");
+                create_script();
             }
         } catch (IOException e) {
             System.out.println("An error occurred in script creator");
             e.printStackTrace();
         }
     }
-    public static void delete_script(){
-        File myObj = new File("erase_script.ps1");
+    public static void delete_script(String script){
+        File myObj = new File(script);
         if(myObj.delete()){
             System.out.println("Deleted the file: " + myObj.getName());
-            create_script();
         } else {
             System.out.println("Failed to delete the file.");
         }
     }
     
+    //====================================================================================================
+    //==========================================LINUX AREA================================================
+    //====================================================================================================
+    public static void linux_script_writer(String sudo_pass, String user_volume){
+        //TODO: remember to delete the script after for privacy reasons because of the sudo password
+        //example for fat32
+        String[] linux_script = {"#!/bin/bash \n\n",
+                                 "password =", "[password]",
+                                 "\ndevice_name =", "[device_name]",
+                                 "\n\n$echo password | sudo -S umount /dev/device_name",
+                                 "\n$echo password | sudo -S mkfs.vfat /dev/device_name"};
+        linux_script[2] = sudo_pass;
+        linux_script[4] = user_volume;
+
+        String final_script = String.join(",", linux_script);
+        try{
+            FileWriter myWriter = new FileWriter("linux_erase_script.sh");
+            myWriter.write(final_script.replace(",", " "));
+            myWriter.close();
+        } catch(IOException e) { //TODO: do a proper error message because yes
+            System.out.println("asahudhas");
+        }
+        
+        try{
+            System.out.println("running the script");
+            String current_dir = System.getProperty("user.dir");
+            String[] command = {"bash ", "[current dir]", "hello.sh"}; //TODO: remember to change "hello.sh" to the formating script
+            command[1] = current_dir;
+            String string_command = String.join(",", command);
+
+            Process shell_process = Runtime.getRuntime().exec(string_command);//<-- like, this does't return error so probably it works....
+            
+            //why the F#ck aint this working, IT WORKED FINE LAST TIME T_T 
+            BufferedReader stdout = new BufferedReader(new InputStreamReader(shell_process.getInputStream()));
+            shell_process.getInputStream();
+            String line;
+
+            while((line = stdout.readLine()) != null ) {
+                System.out.println(line);
+            }
+            stdout.close();
+            shell_process.getOutputStream().close();
+        } catch(IOException e) {
+            System.out.println("ahsdu");
+        }
+        //This will eventually work
+        //Somehow it always works in the end
+
+
+        delete_script("linux_erase_script.sh");
+    }
 }
