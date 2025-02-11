@@ -17,10 +17,15 @@ If you already have the repository cloned you can just run the already compiled 
    Java Main.java
 ```
 ## More about the Program/Development
-### Current Problems
-1. For testing purposes the program only allows you to input up to 3 storage devices, it's an easy fix and next version it will be fixed.
-2. The floppy disk part of this program still isn't working.
-3. If when you'r choosing what to format in the program and don't put an option that's specified the program freaks out and gives an error.
+### Changing the default config files
+It is not recomended that you change the configs directly via modifying the files, there is a specific way to do that on the program by choosing <br>
+[any choice] -> [choose number of volumes] -> [choose Volume] -> [yes to change settings] <br>
+
+![Capture](https://github.com/user-attachments/assets/5a7249cf-bd53-4435-be73-8ccaf54c6784)
+
+
+### Messing with the script files(test_erase_script.pt1/linux_format.sh)
+Changing the code on the script doesn't do anything, they are only there as a show-up so you can see what scripts the program creates and runs.
 
 ### Extra notes
 Funnily enough, I started thinking about creating this because I want to format multiple floppy disks and having to write the same thing again and again is a pain. <br>
