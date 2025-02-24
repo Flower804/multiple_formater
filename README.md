@@ -1,7 +1,25 @@
 # multiple_formater
 Multiple Formater is a program that let's you format multiple storage devices without having to write the same command multiple times
 
-## How to run
+## Windows Version
+1. multiple_volume_formating - :white_check_mark: 
+2. floppy disk               - :x:
+3. pen drive                 - :white_check_mark:
+4. CD drive                  - :x:
+5. DVD drive                 - :x:
+6. HDD                       - :white_check_mark:
+7. SSD                       - :white_check_mark:
+
+## Linux Version
+1. multiple_volume_formating - :heavy_exclamation_mark: 
+2. floppy disk               - :x:
+3. pen drive                 - :white_check_mark:
+4. CD drive                  - :x:
+5. DVD drive                 - :x:
+6. HDD                       - :x:
+7. SSD                       - :x:
+
+# How to run
 Right now the program isn't finished and only has a CLI version, I'll work on a client but yea it still isen't here <br>
 1. **Clone the repository**
 ```bash
@@ -17,15 +35,10 @@ If you already have the repository cloned you can just run the already compiled 
    Java Main.java
 ```
 ## More about the Program/Development
-### Changing the default config files
-It is not recomended that you change the configs directly via modifying the files, there is a specific way to do that on the program by choosing <br>
-[any choice] -> [choose number of volumes] -> [choose Volume] -> [yes to change settings] <br>
-
-![Capture](https://github.com/user-attachments/assets/5a7249cf-bd53-4435-be73-8ccaf54c6784)
-
-
-### Messing with the script files(test_erase_script.pt1/linux_format.sh)
-Changing the code on the script doesn't do anything, they are only there as a show-up so you can see what scripts the program creates and runs.
+### Current Problems
+1. For testing purposes the program only allows you to input up to 3 storage devices, it's an easy fix and next version it will be fixed.
+2. The floppy disk part of this program still isn't working.
+3. If when you'r choosing what to format in the program and don't put an option that's specified the program freaks out and gives an error.
 
 ### Extra notes
 Funnily enough, I started thinking about creating this because I want to format multiple floppy disks and having to write the same thing again and again is a pain. <br>
