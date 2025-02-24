@@ -1,7 +1,25 @@
 # multiple_formater
 Multiple Formater is a program that let's you format multiple storage devices without having to write the same command multiple times
 
-## How to run
+## Windows Version
+1. multiple_volume_formating - :white_check_mark: 
+2. floppy disk               - :x:
+3. pen drive                 - :white_check_mark:
+4. CD drive                  - :x:
+5. DVD drive                 - :x:
+6. HDD                       - :white_check_mark:
+7. SSD                       - :white_check_mark:
+
+## Linux Version
+1. multiple_volume_formating - :heavy_exclamation_mark: 
+2. floppy disk               - :x:
+3. pen drive                 - :white_check_mark:
+4. CD drive                  - :x:
+5. DVD drive                 - :x:
+6. HDD                       - :x:
+7. SSD                       - :x:
+
+# How to run
 Right now the program isn't finished and only has a CLI version, I'll work on a client but yea it still isen't here <br>
 1. **Clone the repository**
 ```bash

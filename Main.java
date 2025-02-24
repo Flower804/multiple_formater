@@ -4,7 +4,8 @@
     version of java because I forgot to update my java version and I make it work
    And I'm wayyyyy to deep to change the code to a new method because like the WHOLE code revolves around that method
    So like, just don't coment on it please, what matters is that it works in the end of the day :,)
-*/
+ASS: Flower <3
+   */
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -19,14 +20,12 @@ import java.io.FileWriter;
 public class Main {
     public static void main(String[] args){
         //default stuff
+        //linux_script_writer("GabrielMoita_129", "sdb1");
         if((System.getProperty("os.name") == "windows")){
             script_starter(1);
         } else {
             script_starter(2);
         }
-
-        //debugging stuff
-        volume_catcher(null);
     }
 
     public static void script_starter(int os){ //os == 1 -> windows
@@ -43,14 +42,14 @@ public class Main {
                 System.out.flush();
                 //TODO: adapt this for the volume catcher
                 if(os == 1){ //user is in windows
-                    volume_catcher(os);
+                    volume_catcher(os, null);
                 }else{ //other operating sistem
                     String sudo_password;
                     Scanner password = new Scanner(System.in);
                     try{
                         System.out.println("please insert your sudo password");
                         sudo_password = password.nextLine();
-                        volume_catcher(os);
+                        volume_catcher(os, sudo_password);
                         //linux_script_writer(sudo_password, "volume");
                     } catch(Exception e){
                         System.out.println("Sorry something went wrong");
@@ -97,7 +96,7 @@ public class Main {
      *      format b: /T:80 /N:9    -The floy disk in drive B: will be formatted to 720KB (80 tracks, 9 secotrs per track)
      */
     //===================================USER PREPARATION AREA============================================
-    public static void volume_catcher(int os){
+    public static void volume_catcher(int os, String sudopassword){
         System.out.println("how many volumes would you like to format?");
         Scanner myObj = new Scanner(System.in);
         int format_number = myObj.nextInt();
@@ -149,17 +148,17 @@ public class Main {
                     user_volume.concat(":");
                 }
             } else { //Thank you Guido for helping me with this T_T
-                int currentMatch = 0; //TODO: acording to Guido this can be optimized, need to look at that later
-                int current = 0;
-                while(currentMatch != "/dev/".length() && current < user_volume.length()){
-                    if("/dev/".charAt(current) == user_volume.charAt(currentMatch)){
-                        currentMatch++;
-                    }
-                    current++;
-                }
-                if(!(currentMatch == "/dev/".length())){
-                    user_volume = "/dev/".concat(user_volume);
-                }
+                //int currentMatch = 0; //TODO: acording to Guido this can be optimized, need to look at that later
+                //int current = 0;
+                //while(currentMatch != "/dev/".length() && current < user_volume.length()){
+                //    if("/dev/".charAt(current) == user_volume.charAt(currentMatch)){
+                //        currentMatch++;
+                //    }
+                //    current++;
+                //}
+                //if(!(currentMatch == "/dev/".length())){
+                //    user_volume = "/dev/".concat(user_volume);
+                //}
             }
             volumes_to_format[i] = user_volume;
 
@@ -167,13 +166,15 @@ public class Main {
         System.out.print("\033[H\033[2J"); //clear terminal  
         System.out.flush();
 
+        System.out.println("Do you want to continue the operation with default settings?");
+        System.out.println("Type \"yes\" or \"no\" ");
         int flag = confirmation();
-        if(flag == 1){
+        if(flag == 0){
             change_default();
 
             System.out.print("\033[H\033[2J"); //clear terminal  
             System.out.flush();
-        } else if(flag == 0){
+        } else if(flag == 1){
             System.out.println("operation continued with default settings");
         }
 
@@ -186,7 +187,7 @@ public class Main {
         System.out.println("\n write \"yes\" or \"no\" ");
 
         if(confirmation() == 1){
-            System.out.println("enteres format sequence");
+            System.out.println("entered format sequence");
             for(int j = 0; j <= (format_number - 1); j++){
                 if(os == 1){ //assuming windows -> write_the_script
                     String user_volume = volumes_to_format[j]; 
@@ -198,9 +199,11 @@ public class Main {
                     //System.out.println(pre_final_gon.concat(pre_gon));
                     write_the_script(pre_final_gon.concat(pre_gon)); //Send volume to format sequence
                 } else {
-                    
+                    System.out.println("sudo pass" + sudopassword);
+                    System.out.println("volume entering" + volumes_to_format[j]);
+                    linux_script_writer(sudopassword, volumes_to_format[j]);
                 }    
-            } //TODO: make this work for linux
+            }
         }
         myObj.close();
     }
@@ -219,92 +222,6 @@ public class Main {
      * EXT2, 3, 4 (Isn't worth it not compatyble)
      */
 
-    //TODO: after confirming the code works without this erase it
-    //public static void pen_drive_format_preparation(){
-    //    
-    //    System.out.println("how many volumes would you like to format?");
-    //    Scanner myObj = new Scanner(System.in);
-    //    int format_number = myObj.nextInt();
-//
-    //    String[] volumes_to_format = {" ", "", "", "", "", "", "", "", "", ""}; //create final String[] so you can "parse" the choosen volumes from the user 
-//
-    //    Scanner volume_to_get = new Scanner(System.in);
-    //    for(int i = 0; i <= (format_number-1); i++){
-    //        String user_volume;
-//
-    //        System.out.print("\033[H\033[2J"); //clear terminal  
-    //        System.out.flush();
-    //        
-    //        System.out.println((i +1) + " volume out of: " + format_number + "\n"); //show the user on where he is in the loop
-    //        try{
-    //            Process powerShellProcess = Runtime.getRuntime().exec("powershell.exe get-Volume"); //execute command to get pc's volume list
-    //            //ProcessBuilder powerShellProcess = new ProcessBuilder("powershell.exe get-Volume");
-//
-    //            powerShellProcess.getOutputStream().close();
-//
-    //            String line;
-    //            BufferedReader stdout = new BufferedReader(new InputStreamReader(
-    //              powerShellProcess.getInputStream()));
-    //            while ((line = stdout.readLine()) != null) { //TODO: find a way to analise the line got and find a way to only show the ones that have the tag - Removable
-    //             System.out.println(line);
-    //            }
-    //            stdout.close();
-//
-    //        } catch(IOException e) {
-    //            System.out.println("an error has ocurred in pre-formater USB");
-    //            e.printStackTrace();
-    //        }
-    //        System.out.println("What Volume do you want to format");
-    //        System.out.println("-> ");
-    //        
-    //    
-    //        user_volume = volume_to_get.nextLine(); //get user's intended volume
-//
-    //        if(!(user_volume.indexOf(':') == 1)){ //verify the volume specified is in the F: format if not force it F -> F:
-    //            user_volume.concat(":");
-    //        }
-    //        
-    //        volumes_to_format[i] = user_volume; //add volume to volume list
-//
-    //    }
-    //    System.out.print("\033[H\033[2J"); //clear terminal  
-    //    System.out.flush();
-//
-    //    System.out.println("Do you want to change the configuration options? \n\nif you don't change it will continue with default\n\nwrite \"yes\" or \"no\" ");
-    //    int flag = confirmation();
-    //    if(flag == 1){
-    //        change_default(); //go to the change default configs thingy
-//
-    //        System.out.print("\033[H\033[2J"); //clear terminal  
-    //        System.out.flush();
-    //    } else if(flag == 0){
-    //        System.out.println("operation continued with default settings");
-    //    }
-//
-    //    System.out.println("do you want to format this volumes? \n");
-    //    
-    //    for(int i = 0; i <= (format_number - 1); i++){ //print out the volumes selected by the user
-    //        System.out.println(volumes_to_format[i] );
-    //    }
-//
-    //    System.out.println("\n write  \"yes\" or \"no\" ");
-//
-    //    if(confirmation() == 1){
-    //        System.out.println("enteres format sequence");
-    //        for(int j = 0; j <= (format_number - 1); j++){
-    //            String user_volume = volumes_to_format[j]; 
-//
-    //            //prepare volume to be of format "F:" for example
-    //            String pre_gon = "\"";
-    //            String pre_final_gon = pre_gon.concat(user_volume);
-//
-    //            //System.out.println(pre_final_gon.concat(pre_gon));
-    //            write_the_script(pre_final_gon.concat(pre_gon));    //send volume to formater sequence
-    //        }
-    //    }
-    //    myObj.close();
-    //    volume_to_get.close();
-    //}
     //====================================   CONFIGS   ===================================================
     public static void change_default() {
         System.out.print("\033[H\033[2J"); //clear terminal  
@@ -489,15 +406,8 @@ public class Main {
 
             powerShellProcess.getOutputStream().close();
 
-            //comments here used for debuging 
-            //String line;
             System.out.println("Formatting the volumes... ");
-            //BufferedReader stdout = new BufferedReader(new InputStreamReader(
-            //powerShellProcess.getInputStream()));
-            //while ((line = stdout.readLine()) != null) {
-            // System.out.println(line);
-            //}
-            //stdout.close();
+
 
         } catch(IOException e) {
             System.out.println("An error has occured in script runner");
@@ -573,65 +483,45 @@ public class Main {
     //====================================================================================================
     //==========================================LINUX AREA================================================
     //====================================================================================================
-    
-    //TODO: after confirming the code works withouth this erase it 
-    //public static void volume_catcher(String sudo_pass){ //do the df command
-    //    try{
-    //        Process volume_catcher = Runtime.getRuntime().exec(new String[]{"bash", "-c", "df"});
-    //        BufferedReader stdInput = new BufferedReader(new InputStreamReader(volume_catcher.getInputStream()));
-    //        
-    //        String a;
-    //        while((a = stdInput.readLine()) != null){
-    //            System.out.println(a);
-    //        }
-    //    } catch(IOException e){
-    //        System.out.println("sorry and error has occured in retreiving the volumes");
-    //        throw new RuntimeException(e);
-    //    }
-    //    //Scanner myObj = new Scanner();
-    //}
-    
-    
+
     public static void linux_script_writer(String sudo_pass, String user_volume){
-        System.out.print("\033[H\033[2J"); //clear terminal  
-        System.out.flush();
-        //example for fat32
+        //System.out.print("\033[H\033[2J"); //clear terminal  
+        //System.out.flush();
+        ////example for fat32
         String[] linux_script = {"#!/bin/bash \n\n",
-                                 "password = ", "\"", "passowrd", "\"",
                                  "\ndevice_name =", "sdb1",
-                                 "\n\necho ", "password", " | sudo -S -k umount /dev/sdb1",
-                                 "\necho ", "password", "| sudo -S -k mkfs.vfat /dev/sdb1"};
+                                 "\n\necho ", "password", " | sudo -S -k umount /dev/", "volume",
+                                 "\necho ", "password", "| sudo -S -k mkfs.vfat /dev/", "volume"};
         String[] password = {"\"", "password", "\""};
         password[1] = sudo_pass;
         String string_password = String.join(",", password);
         string_password.replace(",", "");  
+        linux_script[4] = string_password;
         linux_script[8] = string_password;
-        linux_script[11] = string_password;
+        linux_script[2] = user_volume;
+        linux_script[6] = user_volume;
+        linux_script[10] = user_volume;
 
         String final_script = String.join(",", linux_script);
         try{
             FileWriter myWriter = new FileWriter("linux_erase_script.sh");
             myWriter.write(final_script.replace(",", ""));
-            myWriter.close();
-        } catch(IOException e) { //TODO: do a proper error message because yes
-            System.out.println("asahudhas");
+            myWriter.close(); //save file
+        } catch(IOException e){
+            System.out.println("oidhawoiudhg");
         }
         
         try{
-            System.out.println("running the script");
-            String current_dir = System.getProperty("user.dir"); //get the current directory of the program
-            String[] command = {"/bin/sh ", "linux_erase_script.sh"}; //for some reason the program doesn't run if I put the directory
-            String string_command = String.join(",", command);
+            String[] command = {"/bin/sh ", "linux_erase_script.sh"};
+            String  string_command = String.join(",", command);
 
             System.out.println(string_command.replace(",", "")); //the problem is in runing the script, the command is not the issue
             Runtime.getRuntime().exec(string_command.replace(",", " "));
-            
         } catch(IOException e) {
             System.out.println("ahsdu");
         }
         //This will eventually work
         //Somehow it always works in the end
-
 
         //delete_script("linux_erase_script.sh"); //delete script for security/privacy reasons
     }
